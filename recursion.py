@@ -117,15 +117,15 @@ def group_sum_clump(start, nums, target):
     if start >= len(nums):
         return target == 0 #sum, base
     #clump
-    clump, forward = nums[start], start + 1
-    while forward < len(nums) and nums[forward] == clump:
-        clump += nums[forward]
-        forward += 1
+    length, clump, startIN = nums[start], 0, start
+    while startIN < len(nums) and nums[startIN] == length:
+        clump += nums[startIN]
+        startIN += 1
     #chosen
-    if group_sum_clump(forward, nums, target - clump):
+    if group_sum_clump(startIN, nums, target - clump):
         return True
     #notchosen
-    if group_sum_clump(forward, nums, target):
+    if group_sum_clump(startIN, nums, target):
         return True
     #all fail
     return False
@@ -158,7 +158,7 @@ def split_odd_10(nums):
     #recursive helper function, to call
     def helperfunct(index=0, gr1=0, gr2=0):
         if index >= len(nums):
-            return (gr1 % 2 + gr2 % 2 == 1) and (gr1 % 10 == 0 or gr2 % 10 == 0)
+            return ((gr1 % 2 == 1 and gr2 % 10 == 0) or (gr2 % 2 == 1 and gr1 % 10 == 0))
         # 1 group is odd and one multiple!!
         #sum of one group odd
         #sum of one group multiple of 10
@@ -168,6 +168,7 @@ def split_odd_10(nums):
             return True
         #all fail situation -_-
         return False
+    return helperfunct()
 
  
 
