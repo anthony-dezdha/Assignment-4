@@ -46,7 +46,25 @@ def group_sum_6(start, nums, target):
     pre: start >= 0, len(nums) >= 0, target >= 0, nums will only contain ints
     post: return True if nums has a group of ints that sum to target, False otherwise
     """
-    
+    res = []
+    sol = []
+
+    def backtrack(i, current_target):
+        if i == len(nums):
+            if current_target == 0:
+                if 6 not in nums or 6 in sol:
+                    res.append(sol[:])
+            return
+
+        backtrack(i + 1, current_target)
+
+        sol.append(nums[i])
+        backtrack(i + 1, current_target - nums[i])
+        sol.pop()
+
+    backtrack(start, target)
+
+    return len(res) > 0
 
 
 def group_no_adj(start, nums, target):
@@ -80,7 +98,22 @@ def group_sum_5(start, nums, target):
     pre: start >= 0, len(nums) >= 0, target >= 0, nums will only contain ints
     post: return True if nums has a group of ints that sum to target, False otherwise
     """
+    if start == len(nums):
+        return target == 0
+    item = nums[start]
 
+    if item % 5 == 0:
+        if start + 1 < len(nums) and nums[start+1] == 1:
+            return group_sum_5(start+2, nums, target-item)
+        return group_sum_5(start+1, nums, target-item)
+
+    if group_sum_5(start + 1, nums, target - item):
+        return True
+
+    if group_sum_5(start + 1, nums, target):
+        return True
+
+    return False
 
 
 def group_sum_clump(start, nums, target):
@@ -142,7 +175,27 @@ def split_array(nums):
     pre: len(nums) >= 0, nums will only contain ints
     post: return True if nums can be split, False otherwise
     """
-    
+    def helper(index, list1, list2):
+        if index == len(nums):
+            return list1 == list2
+
+        item = nums[index]
+        list1 += item
+
+        if helper(index + 1, list1, list2):
+            return True
+
+        list1 -= item
+        list2 += item
+
+        if helper(index + 1, list1, list2):
+            return True
+
+        list2 -= item
+
+        return False
+
+    return helper(0, 0, 0)
 
 
 def split_odd_10(nums):
@@ -185,3 +238,29 @@ def split_53(nums):
     pre: len(nums) >= 0, nums will only contain ints
     post: return True if nums can be split, False otherwise
     """
+    def helper(index, fives, threes):
+        if index == len(nums):
+            return fives == threes
+
+        item = nums[index]
+        if item % 5 == 0:
+            return helper(index + 1, fives + item, threes)
+
+        elif item % 3 == 0:
+            return helper(index + 1, fives, threes + item)
+
+        else:
+            fives += item
+            if helper(index + 1, fives, threes):
+                return True
+
+            fives -= item
+            threes += item
+
+            if helper(index + 1, fives, threes):
+                return True
+
+            threes -= item
+            return False
+
+    return helper(0, 0, 0)
